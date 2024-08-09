@@ -31,7 +31,7 @@ jobs:
         with:
           repository: blinklabs-ai/blinklabs-backend-orchestrator 
           ref: azure-build-blink-token-frontend
-          # token: ${{ secrets.GITHUB_TOKEN }}  
+          token: ${{ secrets.GITHUB_TOKEN }}  
 
       - name: Copy code from token-template to orchestrator build path
         run: |
