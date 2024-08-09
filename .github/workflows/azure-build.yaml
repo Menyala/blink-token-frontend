@@ -26,7 +26,7 @@ jobs:
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
     
-     - name: Checkout orchestrator
+      - name: Checkout orchestrator
         uses: actions/checkout@v3
         with:
           repository: blinklabs-ai/blinklabs-backend-orchestrator 
