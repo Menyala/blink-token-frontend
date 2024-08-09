@@ -1,0 +1,50 @@
+# This workflow will build image using the docker file present in third repo  and push it to azure
+name: Azure build
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  push:
+    branches:
+      - azure-build-flow
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    # environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'dev' }}
+    environment: dev
+
+
+    steps:
+      - name: Checkout token-template
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+    
+     - name: Checkout orchestrator
+        uses: actions/checkout@v3
+        with:
+          repository: blinklabs-ai/blinklabs-backend-orchestrator 
+          ref: azure-build-blink-token-frontend
+          # token: ${{ secrets.GITHUB_TOKEN }}  
+
+      - name: Copy code from token-template to orchestrator build path
+        run: |
+          mkdir -p blinklabs-backend-orchestrator/images/usecase-token/frontend
+          cp -r blinklabs-token-template/* blinklabs-backend-orchestrator/images/usecase-token/frontend/
+
+      - name: Build and Push to ACR
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context : images/usecase-token
+          tags: ${{ secrets.ACR_REG_URL }}/blinkai/orch-images/dev:latest
+          file: Dockerfile
