@@ -13,10 +13,7 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    # environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'dev' }}
     environment: dev
-
-
     steps:
       - name: Checkout token-template
         uses: actions/checkout@v3
@@ -49,4 +46,3 @@ jobs:
           tags: ${{ secrets.ACR_REG_URL }}/blinkai/orch-images/dev:latest
           file: Dockerfile
 
-          
